@@ -1,6 +1,6 @@
 {
   "name": "pino-loki-adonis",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A transport for pino that sends messages to Loki in AdonisJS 4.1, based on the pino-loki package",
   "author": "Alexander Dmitriev",
   "repository": {

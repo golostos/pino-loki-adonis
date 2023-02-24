@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import { PinoLog, PinoLokiOptionsContract } from '../@types'
 import { LogBuilder } from '../LogBuilder'
 import { MessagePort } from 'node:worker_threads';
+import type { LokiRequest } from '../LokiWait';
 
 /**
  * Responsible for pushing logs to Loki
@@ -54,20 +55,28 @@ export class LogPusher {
     try {
       const response = await this.client.post(`/loki/api/v1/push`, { streams: lokiLogs });
       if (port) logs.forEach(log => {
-        if (typeof log.lokiLogId === 'string' && log.lokiLogId.length) port.postMessage({
-          id: log.lokiLogId, 
-          status: 'FINISHED'
-        })
+        if (typeof log.lokiLogId === 'string' && log.lokiLogId.length) {
+          const message: LokiRequest = {
+            id: log.lokiLogId,
+            status: 'FINISHED',
+            log
+          }
+          port.postMessage(message)
+        }
       });
       return response;
     } catch (err) {
       const errorMsg = this.handleFailure(err);
       if (port) logs.forEach(log => {
-        if (typeof log.lokiLogId === 'string' && log.lokiLogId.length) port.postMessage({
-          id: log.lokiLogId,
-          status: 'ERROR',
-          message: errorMsg
-        })
+        if (typeof log.lokiLogId === 'string' && log.lokiLogId.length) {
+          const message: LokiRequest = {
+            id: log.lokiLogId,
+            status: 'ERROR',
+            message: errorMsg,
+            log
+          }
+          port.postMessage(message)
+        }
       })
       else console.error(errorMsg);
     }
