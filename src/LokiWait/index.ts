@@ -30,7 +30,7 @@ export default class LokiWait {
 
   addLokiRequest(request: LokiRequest) {
     if (request.status === 'ERROR') {
-      this.logger.transport('lokiErrors').error({ 
+      if (this.logger) this.logger.transport('lokiErrors').error({ 
         code: 'addLokiRequest', 
         group: 'lokiErrors', 
         message: 'Loki sending error: ' + request.message,
