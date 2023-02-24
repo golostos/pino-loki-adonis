@@ -18,15 +18,18 @@
   },
   "devDependencies": {
     "@types/node": "^18.13.0",
-    "typescript": "^4.9.5",
+    "adonis-types": "^1.0.8",
     "husky": "^8.0.3",
-    "adonis-types": "^1.0.8"
+    "rimraf": "^4.1.2",
+    "tsx": "^3.12.3",
+    "typescript": "^4.9.5",
+    "unbuild": "^1.1.2"
   },
   "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build && husky install",
+    "build": "rimraf dist && unbuild",
     "precommit": "npm version patch --no-git-tag-version && git add package.json",
-    "postcommit": "npm publish"
+    "postcommit": "npm publish",
+    "prepare": "husky install && npm run build"
   },
   "keywords": [
     "Pino",
@@ -35,5 +38,8 @@
   ],
   "license": "Unlicense",
   "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts"
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ]
 }

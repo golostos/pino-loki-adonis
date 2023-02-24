@@ -1,5 +1,5 @@
 import { ServiceProvider } from '@adonisjs/fold'
-import LokiWait from './LokiWait'
+import LokiWait from '.'
 
 export default class LokiWaitProvider extends ServiceProvider {
   register() {

@@ -1,5 +1,3 @@
-'use strict'
-
 import _ from 'lodash';
 import { pino, Logger } from 'pino';
 import { MessageChannel } from 'node:worker_threads';
@@ -14,6 +12,7 @@ export type PinoConfig = {
   level: "info" | "fatal" | "error" | "warn" | "debug";
   url: string;
   timestamp: string;
+  interval?: number;
   batching?: boolean;
   portWait?: boolean;
 }
@@ -48,7 +47,7 @@ export default class PinoLokiAdonis {
           options: {
             batching: this.config.batching ?? true,
             portWait: this.config.portWait ?? false,
-            interval: 5,
+            interval: this.config.interval ?? 5,
             host: lokiUrl.origin,
             basicAuth: {
               username: lokiUrl.username,
@@ -72,7 +71,7 @@ export default class PinoLokiAdonis {
     if (this.config.portWait) {
       const channel = new MessageChannel();
       lokiWait.channel = channel;
-      channel.port2.on('message', lokiWait.addLokiRequest);
+      channel.port2.on('message', message => lokiWait.addLokiRequest(message));
       const worker: Worker = transport.worker
       worker.postMessage({ port: channel.port1 }, [channel.port1]);
     }

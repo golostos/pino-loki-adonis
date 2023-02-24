@@ -65,7 +65,8 @@ export class LogPusher {
       if (port) logs.forEach(log => {
         if (typeof log.lokiLogId === 'string' && log.lokiLogId.length) port.postMessage({
           id: log.lokiLogId,
-          status: 'ERROR: ' + errorMsg
+          status: 'ERROR',
+          message: errorMsg
         })
       })
       else console.error(errorMsg);
