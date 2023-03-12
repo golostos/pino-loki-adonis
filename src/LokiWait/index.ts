@@ -1,5 +1,4 @@
 import { MessageChannel } from 'node:worker_threads'
-import { ioc } from '@adonisjs/fold';
 import type Logger from 'adonis-types/Framework/Logger/Facade'
 import type { PinoLog } from '../@types';
 
@@ -30,6 +29,7 @@ export default class LokiWait {
 
   addLokiRequest(request: LokiRequest) {
     if (request.status === 'ERROR') {
+      this.requests.delete(request.id)
       if (this.logger) this.logger.transport('lokiErrors').error({ 
         code: 'addLokiRequest', 
         group: 'lokiErrors', 
@@ -63,7 +63,7 @@ export default class LokiWait {
         } else {
           stopFunction()
         }
-      }, 5)
+      }, 20)
     })
   }
 }
