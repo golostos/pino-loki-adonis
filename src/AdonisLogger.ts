@@ -57,14 +57,15 @@ export default class PinoLokiAdonis {
               application: this.config.name,
               tag: this.config.name,
             },
-            propsToLabels: ['code', 'group']
+            propsToLabels: ['code', 'group', 'opsGroupName', 'method']
           },
           level: "info",
-        }, {
-          target: "pino-pretty",
-          options: { destination: 1 },
-          level: "info"
-        }
+        }, 
+        // {
+        //   target: "pino-pretty",
+        //   options: { destination: 1 },
+        //   level: "info"
+        // }
       ]
     });
 
