@@ -40,34 +40,37 @@ export default class PinoLokiAdonis {
     }
 
     const lokiUrl = new URL(this.config.url)
-    const transport = pino.transport({
-      targets: [
-        {
-          target: "pino-loki-adonis",
-          options: {
-            batching: this.config.batching ?? true,
-            portWait: this.config.portWait ?? false,
-            interval: this.config.interval ?? 5,
-            host: lokiUrl.origin,
-            basicAuth: {
-              username: lokiUrl.username,
-              password: lokiUrl.password,
-            },
-            labels: {
-              application: this.config.name,
-              tag: this.config.name,
-            },
-            propsToLabels: ['code', 'group', 'opsGroupName', 'method']
-          },
-          level: "info",
-        }, 
-        // {
-        //   target: "pino-pretty",
-        //   options: { destination: 1 },
-        //   level: "info"
-        // }
-      ]
-    });
+    
+    const targets: pino.TransportTargetOptions[] = [{
+      target: "pino-loki-adonis",
+      options: {
+        batching: this.config.batching ?? true,
+        portWait: this.config.portWait ?? false,
+        interval: this.config.interval ?? 5,
+        host: lokiUrl.origin,
+        basicAuth: {
+          username: lokiUrl.username,
+          password: lokiUrl.password,
+        },
+        labels: {
+          application: this.config.name,
+          tag: this.config.name,
+        },
+        propsToLabels: ['code', 'group', 'opsGroupName', 'method']
+      },
+      level: "info",
+    }]
+
+    if (process.env.NODE_ENV !== 'production') {
+      targets.push({
+        target: "pino-pretty",
+        options: { destination: 1 },
+        level: "info"
+      })
+    }
+
+    const transport = pino.transport({ targets });
+
 
     if (this.config.portWait) {
       const channel = new MessageChannel();
